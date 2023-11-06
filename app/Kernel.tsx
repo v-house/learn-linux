@@ -4,6 +4,7 @@ import React, { SetStateAction, useState, useRef, useEffect } from "react";
 
 export default function Kernel() {
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
+  const [nonEmptyCommands, setNonEmptyCommands] = useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   const system = "vivek@try-linux";
@@ -16,6 +17,8 @@ export default function Kernel() {
   }, []);
 
   const [currentCommand, setCurrentCommand] = useState(`${system}:${path}$ `);
+  const [historyIndex, setHistoryIndex] = useState<number>(0);
+
   const handleCommandInputChange = (e: {
     target: { value: SetStateAction<string> };
   }) => {
@@ -25,15 +28,47 @@ export default function Kernel() {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      setCommandHistory([...commandHistory, currentCommand]);
+      const trimmedCommand = currentCommand.trim();
+      if (trimmedCommand !== "") {
+        if (trimmedCommand === `${system}:${path}$ clear`) {
+          if (trimmedCommand !== `${system}:${path}$`) {
+            setNonEmptyCommands([...nonEmptyCommands, currentCommand]);
+          }
+          setCommandHistory([]);
+        } else {
+          if (trimmedCommand !== `${system}:${path}$`) {
+            setNonEmptyCommands([...nonEmptyCommands, currentCommand]);
+          }
+          setCommandHistory([...commandHistory, currentCommand]);
+        }
+      }
       setCurrentCommand(`${system}:${path}$ `);
+      setHistoryIndex(0);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      if (historyIndex <= nonEmptyCommands.length - 1) {
+        const newIndex = historyIndex + 1;
+        setHistoryIndex(newIndex);
+        setCurrentCommand(nonEmptyCommands[nonEmptyCommands.length - newIndex]);
+      }
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      if (historyIndex > 0) {
+        const newIndex = historyIndex - 1;
+        setHistoryIndex(newIndex);
+        setCurrentCommand(
+          newIndex === 0
+            ? `${system}:${path}$ `
+            : nonEmptyCommands[nonEmptyCommands.length - newIndex]
+        );
+      }
     }
   };
 
   return (
     <main className="max-w-full h-full flex relative overflow-y-hidden">
       <div className="bg-slate-500 w-full h-full font-mono p-1 no-scrollbar overflow-y-scroll">
-        <div className="mt-1">
+        <div id="kernel" className="mt-1">
           {commandHistory.map((command, index) => (
             <div key={index} className="text-green-400">
               {command}
@@ -44,7 +79,6 @@ export default function Kernel() {
           ref={inputRef}
           type="text"
           className="w-full bg-transparent border-none focus:outline-none"
-          placeholder=""
           value={currentCommand}
           onChange={handleCommandInputChange}
           onKeyDown={handleKeyDown}

@@ -1,4 +1,17 @@
+"use client";
+
+import React, { useState } from "react";
+import UpdatesPage from "./ShortDocs";
+
 export default function Topnav() {
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
+
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+
+  const toggleNotificationPanel = () => {
+    setIsNotificationOpen((prevIsNotificationOpen) => !prevIsNotificationOpen);
+  };
+
   return (
     <>
       <nav className="flex items-center justify-between bg-teal-500 p-6">
@@ -10,7 +23,10 @@ export default function Topnav() {
         </div>
         <div className="">
           <div className="">
-            <a href="#responsive-header" className="text-white flex">
+            <button
+              className="text-white flex"
+              onClick={toggleNotificationPanel}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -25,10 +41,14 @@ export default function Topnav() {
                   d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"
                 />
               </svg>
-            </a>
+            </button>
           </div>
         </div>
       </nav>
+      <UpdatesPage
+        isOpen={isNotificationOpen}
+        onClose={toggleNotificationPanel}
+      />
     </>
   );
 }
