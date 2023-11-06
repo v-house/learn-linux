@@ -2,10 +2,10 @@
 
 import React, { useState } from "react";
 import UpdatesPage from "./ShortDocs";
+import { useRouter } from "next/navigation";
 
 export default function Topnav() {
-  const [isSidebarOpen, setSidebarOpen] = useState(false);
-
+  const router = useRouter();
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
 
   const toggleNotificationPanel = () => {
@@ -15,7 +15,10 @@ export default function Topnav() {
   return (
     <>
       <nav className="flex items-center justify-between bg-teal-500 p-6">
-        <div className="flex items-center flex-shrink-0 text-white mr-6">
+        <div
+          className="flex items-center flex-shrink-0 text-white mr-6 cursor-pointer"
+          onClick={() => router.push("/")}
+        >
           <span className="text-4xl mr-4">{"!>"}</span>
           <span className="font-semibold text-xl tracking-tight">
             Try Linux
