@@ -110,14 +110,9 @@ const Documentation: React.FC = () => {
               </thead>
               <tbody>
                 <tr className="border-b border-gray-300">
-                  <td className="py-2 px-4">cd</td>
-                  <td className="py-2 px-4">Change the current directory</td>
+                  <td className="py-2 px-4">clear</td>
+                  <td className="py-2 px-4">Clears the Terminal</td>
                 </tr>
-                <tr className="border-b border-gray-300">
-                  <td className="py-2 px-4">ls</td>
-                  <td className="py-2 px-4">List files and directories</td>
-                </tr>
-                {/* Add more basic Linux commands here */}
               </tbody>
             </table>
 
